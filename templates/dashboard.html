@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Market Basket Analysis</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        if (typeof Chart === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"><\/script>');
+        }
+    </script>
+    <script src="/static/script.js" defer></script>
+</head>
+<body class="page-dashboard">
+    <header class="topbar">
+        <div class="brand">Market Basket AI</div>
+        <nav class="nav-links">
+            <a class="nav-link" href="/">Upload</a>
+            <a class="nav-link active" href="/dashboard">Dashboard</a>
+            <a class="nav-link" href="/suggestions">Suggestions</a>
+        </nav>
+        <button class="theme-toggle" type="button">Dark Mode</button>
+    </header>
+
+    <main class="page-shell">
+        <section class="dashboard-header">
+            <div>
+                <p class="eyebrow">Predictive Insights</p>
+                <h1>Analyze your dataset with charts and AI forecasts.</h1>
+                <p class="hero-copy">Select the best numeric column, review the preview, and download a custom report.</p>
+            </div>
+            <div class="action-row">
+                <a class="btn btn-primary" href="/report">Download report</a>
+                <a class="btn btn-secondary" href="/suggestions">View suggestions</a>
+            </div>
+        </section>
+
+        <section class="metrics-grid">
+            <article class="metric-card">
+                <span>File</span>
+                <strong>{{ analysis.filename or 'Uploaded data' }}</strong>
+            </article>
+            <article class="metric-card">
+                <span>Rows</span>
+                <strong>{{ analysis.row_count }}</strong>
+            </article>
+            <article class="metric-card">
+                <span>Columns</span>
+                <strong>{{ analysis.column_count }}</strong>
+            </article>
+            <article class="metric-card">
+                <span>Selected</span>
+                <strong>{{ analysis.selected_column or 'None' }}</strong>
+            </article>
+        </section>
+
+        <section class="panel-card form-panel">
+            <form action="/dashboard" method="POST" class="inline-form">
+                <label for="selected_column">Choose column to analyze</label>
+                <select id="selected_column" name="selected_column">
+                    {% for column in analysis.numeric_columns %}
+                    <option value="{{ column }}" {% if column == analysis.selected_column %}selected{% endif %}>{{ column }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+            <div class="preview-card">
+                <h2>Preview</h2>
+                <div class="preview-scroll">
+                    {% if analysis.preview %}
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                {% for key in analysis.preview[0].keys() %}
+                                <th>{{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in analysis.preview %}
+                            <tr>
+                                {% for value in row.values() %}
+                                <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="small-copy">No preview available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <section class="charts-grid">
+            <article class="chart-card">
+                <div class="chart-header">
+                    <h2 id="bar1_title"></h2>
+                    <span id="bar1_desc" class="chart-description"></span>
+                </div>
+                <canvas id="barChart1"></canvas>
+            </article>
+            <article class="chart-card">
+                <div class="chart-header">
+                    <h2 id="bar2_title"></h2>
+                    <span id="bar2_desc" class="chart-description"></span>
+                </div>
+                <canvas id="barChart2"></canvas>
+            </article>
+            <article class="chart-card full-width">
+                <div class="chart-header">
+                    <h2 id="pred_title"></h2>
+                    <span id="pred_desc" class="chart-description"></span>
+                </div>
+                <canvas id="predictionChart"></canvas>
+            </article>
+        </section>
+
+        <section class="panel-card summary-panel">
+            <h2>Prediction Summary</h2>
+            <ul class="summary-list">
+                {% for line in analysis.summary %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const analysis = {{ analysis | tojson | safe }};
+        window.dashboardData = analysis;
+    </script>
+</body>
+</html>

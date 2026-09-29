@@ -1,0 +1,29 @@
+# Local secrets (the template is safe to share)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# User uploads and runtime state
+instance/
+*.log
+
+# Python environments and generated files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

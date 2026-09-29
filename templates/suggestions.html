@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suggestions | Market Basket AI</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/script.js" defer></script>
+</head>
+<body class="page-suggestions">
+    <header class="topbar">
+        <div class="brand">Market Basket AI</div>
+        <nav class="nav-links">
+            <a class="nav-link" href="/">Upload</a>
+            <a class="nav-link" href="/dashboard">Dashboard</a>
+            <a class="nav-link active" href="/suggestions">Suggestions</a>
+        </nav>
+        <button class="theme-toggle" type="button">Dark Mode</button>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero-card">
+            <div>
+                <p class="eyebrow">Improvement Ideas</p>
+                <h1>Ask an AI advisor about your data.</h1>
+                <p class="hero-copy">The advisor sees aggregate statistics, not the raw rows. Recommendations require your approval before action.</p>
+            </div>
+        </section>
+
+        <section class="panel-card ai-advisor-panel">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">AI decision support</p>
+                    <h2>What should we investigate or improve?</h2>
+                </div>
+                <span class="provider-badge">{{ ai_advice.provider }}</span>
+            </div>
+            <form action="/suggestions" method="POST" class="advisor-form">
+                <label for="question">Optional question</label>
+                <textarea id="question" name="question" maxlength="500" placeholder="Example: Which customer segment should we investigate first?">{{ question }}</textarea>
+                <button class="btn btn-primary" type="submit">Generate advice</button>
+            </form>
+            {% if ai_advice.notice %}<p class="alert alert-info">{{ ai_advice.notice }}</p>{% endif %}
+            <div class="ai-answer">{{ ai_advice.answer }}</div>
+            <p class="small-copy">AI can recommend and explain; it cannot execute business actions or replace human judgment.</p>
+        </section>
+
+        <section class="suggestions-grid">
+            {% if insights %}
+                {% for suggestion in insights %}
+                <article class="suggestion-card">
+                    <p>{{ suggestion }}</p>
+                </article>
+                {% endfor %}
+            {% else %}
+                <div class="panel-card">
+                    <p class="small-copy">No suggestions could be generated for this dataset.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="action-panel">
+            <a class="btn btn-primary" href="/">Upload another file</a>
+            <a class="btn btn-secondary" href="/dashboard">Return to dashboard</a>
+        </section>
+    </main>
+</body>
+</html>

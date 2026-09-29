@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Market Basket AI Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/script.js" defer></script>
+</head>
+<body class="page-upload">
+    <header class="topbar">
+        <div class="brand">Market Basket AI</div>
+        <nav class="nav-links">
+            <a class="nav-link active" href="/">Upload</a>
+            <a class="nav-link" href="/dashboard">Dashboard</a>
+            <a class="nav-link" href="/suggestions">Suggestions</a>
+        </nav>
+        <button class="theme-toggle" type="button">Dark Mode</button>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero-card">
+            <div>
+                <p class="eyebrow">Analytics</p>
+                <h1>Upload your CSV to explore predictions.</h1>
+                <p class="hero-copy">
+                    Drag and drop a file or choose a CSV to preview sales data, generate predictions, and export a report.
+                </p>
+            </div>
+        </section>
+
+        <section class="content-grid">
+            <div class="panel-card upload-panel">
+                <h2>Upload Data</h2>
+                {% if error %}
+                <div class="alert alert-error">{{ error }}</div>
+                {% endif %}
+                <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+                    <div id="dropZone" class="drop-zone">
+                        <span class="drop-icon">⬆</span>
+                        <strong>Drag & drop your CSV here</strong>
+                        <span>or click to browse files</span>
+                    </div>
+                    <input id="fileInput" type="file" name="file" accept=".csv" hidden />
+                    <div class="upload-actions">
+                        <button id="fileSelect" type="button" class="btn btn-primary">Choose file</button>
+                        <span id="fileLabel" class="file-label">No file selected</span>
+                    </div>
+                    <button id="submitBtn" type="submit" class="btn btn-secondary">Start analysis</button>
+                </form>
+                <div id="processingState" class="processing-state hidden">Processing… please wait</div>
+            </div>
+            <div class="panel-card preview-panel">
+                <h2>Why this matters</h2>
+                <p class="small-copy">A clean upload experience helps keep each session safe and ready for analysis. Use a smaller dataset to verify preview and alerts quickly.</p>
+                <div class="metric-block">
+                    <strong>Supported:</strong> CSV only
+                </div>
+                <div class="metric-block">
+                    <strong>What you get:</strong> preview, summary, charting, suggestions, export
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
